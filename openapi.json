@@ -1,0 +1,565 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Library API",
+    "description": "A simple library API.",
+    "contact": {
+      "name": "API Support",
+      "url": "http://www.example.com/support",
+      "email": "support@example.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/shelves": {
+      "get": {
+        "summary": "List Shelves",
+        "description": "List shelves in the library.",
+        "operationId": "ListShelves",
+        "parameters": [
+          {
+            "name": "max_page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Max Page Size"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Page Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListShelvesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Shelf",
+        "description": "Create a new shelf.",
+        "operationId": "CreateShelf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shelf"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shelf"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelves/{shelf_id}": {
+      "get": {
+        "summary": "Get Shelf",
+        "description": "Get a shelf by ID.",
+        "operationId": "GetShelf",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shelf"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Shelf",
+        "description": "Delete a shelf.",
+        "operationId": "DeleteShelf",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelves/{shelf_id}/books": {
+      "get": {
+        "summary": "List Books",
+        "description": "List books on a shelf.",
+        "operationId": "ListBooks",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          },
+          {
+            "name": "max_page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Max Page Size"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Page Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBooksResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Book",
+        "description": "Create a new book on a shelf.",
+        "operationId": "CreateBook",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelves/{shelf_id}/books/{book_id}": {
+      "get": {
+        "summary": "Get Book",
+        "description": "Get a book by ID.",
+        "operationId": "GetBook",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          },
+          {
+            "name": "book_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Book Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Book",
+        "description": "Delete a book.",
+        "operationId": "DeleteBook",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          },
+          {
+            "name": "book_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Book Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^shelves/[a-zA-Z0-9\\-]+/books/[a-zA-Z0-9\\-]+$",
+            "title": "Name",
+            "description": "The resource name of the book. Format: shelves/{shelf}/books/{book}"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "The resource path."
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "The title of the book."
+          },
+          "author": {
+            "type": "string",
+            "title": "Author",
+            "description": "The author of the book."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "title",
+          "author"
+        ],
+        "title": "Book",
+        "x-aep-resource": {
+          "patterns": [
+            "shelves/{shelf}/books/{book}"
+          ],
+          "plural": "books",
+          "singular": "book",
+          "type": "library.example.com/book"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ListBooksResponse": {
+        "properties": {
+          "books": {
+            "items": {
+              "$ref": "#/components/schemas/Book"
+            },
+            "type": "array",
+            "title": "Books"
+          },
+          "next_page_token": {
+            "type": "string",
+            "title": "Next Page Token",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "books"
+        ],
+        "title": "ListBooksResponse"
+      },
+      "ListShelvesResponse": {
+        "properties": {
+          "shelves": {
+            "items": {
+              "$ref": "#/components/schemas/Shelf"
+            },
+            "type": "array",
+            "title": "Shelves"
+          },
+          "next_page_token": {
+            "type": "string",
+            "title": "Next Page Token",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "shelves"
+        ],
+        "title": "ListShelvesResponse"
+      },
+      "Shelf": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^shelves/[a-zA-Z0-9\\-]+$",
+            "title": "Name",
+            "description": "The resource name of the shelf. Format: shelves/{shelf}"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "The resource path."
+          },
+          "theme": {
+            "type": "string",
+            "title": "Theme",
+            "description": "The theme of the shelf."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "theme"
+        ],
+        "title": "Shelf",
+        "x-aep-resource": {
+          "patterns": [
+            "shelves/{shelf}"
+          ],
+          "plural": "shelves",
+          "singular": "shelf",
+          "type": "library.example.com/shelf"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
