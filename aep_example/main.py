@@ -1,19 +1,18 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from db import init_db
-from api import router
+from .db import init_db
+from .api import router
 import uvicorn
-import json
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def setup_db(app: FastAPI):
     # Startup: Create tables
     await init_db()
     yield
     # Shutdown
 
 app = FastAPI(
-    lifespan=lifespan,
+    lifespan=setup_db,
     title="Library API",
     version="1.0.0",
     description="A simple library API.",
@@ -29,5 +28,8 @@ app = FastAPI(
 
 app.include_router(router)
 
+def start():
+    uvicorn.run("aep_example.main:app", host="0.0.0.0", port=8000, reload=True)
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    start()

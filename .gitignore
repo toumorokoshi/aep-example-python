@@ -2,3 +2,4 @@ __pycache__
 temp_linter
 .venv
 library.db
+*.egg-info

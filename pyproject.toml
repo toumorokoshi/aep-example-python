@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aep-example"
+version = "0.1.0"
+description = "An AEP-compliant example Fast API."
+authors = [
+    {name = "Yusuke Tsutsumi", email = "yusuke@tsutsumi.io"},
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "sqlalchemy",
+    "aiosqlite"
+]
+requires-python = ">=3.9"
+
+[project.scripts]
+aep-server = "aep_example.main:start"
+
+[tool.setuptools.packages.find]
+where = ["."]
