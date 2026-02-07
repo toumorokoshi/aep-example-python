@@ -7,9 +7,8 @@ SHELF_NAME_PATTERN = r"^shelves/[a-zA-Z0-9\-]+$"
 BOOK_NAME_PATTERN = r"^shelves/[a-zA-Z0-9\-]+/books/[a-zA-Z0-9\-]+$"
 
 class Shelf(BaseModel):
-    name: str = Field(..., pattern=SHELF_NAME_PATTERN, description="The resource name of the shelf. Format: shelves/{shelf}")
-    path: str = Field(..., description="The resource path.")
-    theme: str = Field(..., description="The theme of the shelf.")
+    path: Optional[str] = Field(default=None, pattern=SHELF_NAME_PATTERN, description="The resource path.", json_schema_extra={"readOnly": True})
+    theme: str = Field(description="The theme of the shelf.")
 
     model_config = {
         "json_schema_extra": {
@@ -23,10 +22,9 @@ class Shelf(BaseModel):
     }
 
 class Book(BaseModel):
-    name: str = Field(..., pattern=BOOK_NAME_PATTERN, description="The resource name of the book. Format: shelves/{shelf}/books/{book}")
-    path: str = Field(..., description="The resource path.")
-    title: str = Field(..., description="The title of the book.")
-    author: str = Field(..., description="The author of the book.")
+    path: Optional[str] = Field(default=None, pattern=BOOK_NAME_PATTERN, description="The resource path.", json_schema_extra={"readOnly": True})
+    title: str = Field(description="The title of the book.")
+    author: str = Field(description="The author of the book.")
 
     model_config = {
         "json_schema_extra": {

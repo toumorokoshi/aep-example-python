@@ -12,15 +12,15 @@ Base = declarative_base()
 
 class DBShelf(Base):
     __tablename__ = "shelves"
-    name = Column(String, primary_key=True, index=True) # Resource name is PK
+    id = Column(String, primary_key=True, index=True)
     theme = Column(String)
 
 class DBBook(Base):
     __tablename__ = "books"
-    name = Column(String, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     title = Column(String)
     author = Column(String)
-    shelf_name = Column(String, ForeignKey("shelves.name"))
+    shelf_id = Column(String, ForeignKey("shelves.id"))
 
 async def init_db():
     async with engine.begin() as conn:

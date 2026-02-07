@@ -2,13 +2,17 @@
 
 An example AEP compliant API, written in Python
 
-## Getting started
+## Prequisites
 
-1. Install the requirements for this repository from `requirements.txt`.
-2. Install this repository as an editable python package (e.g. `pip install -e .`)
-3. Run the server (e.g. `aep-server`)
+- [uv](https://github.com/astral-sh/uv).
 
-## Using the tools
+## Starting the server
+
+The example server can be started with the following command:
+
+`uv run aep-server`
+
+## Command line tools with aepcli
 
 You can install the command line tool with:
 
