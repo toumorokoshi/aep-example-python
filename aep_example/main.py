@@ -33,7 +33,8 @@ app.add_middleware(
         "https://ui.aep.dev", "http://ui.aep.dev",
         # this is the standard port for aep-explorer locally.
         # so we should allow this for development purpose.
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "http://localhost:4173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
