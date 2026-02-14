@@ -6,3 +6,6 @@ generate-openapi:
 
 lint:
     npx @stoplight/spectral lint --ruleset "https://raw.githubusercontent.com/aep-dev/aep-openapi-linter/main/spectral.yaml" ./openapi.json
+
+test:
+    uv run pytest
