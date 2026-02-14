@@ -19,7 +19,7 @@ dependencies = [
 requires-python = ">=3.9"
 
 [project.scripts]
-aep-server = "aep_example.main:start"
+aep-server = "aep_example.main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

@@ -43,8 +43,35 @@ app.add_middleware(
 
 app.include_router(router)
 
-def start():
+import argparse
+import json
+import uvicorn
+
+def run_server():
     uvicorn.run("aep_example.main:app", host="0.0.0.0", port=8000, reload=True)
 
+def generate_openapi():
+    openapi_data = app.openapi()
+    with open("openapi.json", "w") as f:
+        json.dump(openapi_data, f, indent=2)
+        f.write("\n")
+
+def main():
+    parser = argparse.ArgumentParser(description="AEP Example Server")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # Subcommand: serve
+    parser_serve = subparsers.add_parser("serve", help="Start the server")
+
+    # Subcommand: generate-openapi
+    parser_generate = subparsers.add_parser("generate-openapi", help="Generate OpenAPI JSON")
+
+    args = parser.parse_args()
+
+    if args.command == "serve":
+        run_server()
+    elif args.command == "generate-openapi":
+        generate_openapi()
+
 if __name__ == "__main__":
-    start()
+    main()

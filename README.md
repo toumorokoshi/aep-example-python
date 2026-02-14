@@ -5,6 +5,7 @@ An example AEP compliant API, written in Python
 ## Prequisites
 
 - [uv](https://github.com/astral-sh/uv).
+- [spectral](https://github.com/stoplightio/spectral).
 
 ## Starting the server
 
@@ -25,3 +26,9 @@ And then use it as an interactive API with:
 And you can save it as an configuration with the following:
 
 `aepcli core config add example --openapi-path=http://localhost:8000/openapi.json`
+
+## using ui.aep.dev
+
+You can use [ui.aep.dev](https://ui.aep.dev) to navigate the API through a web interface.
+
+

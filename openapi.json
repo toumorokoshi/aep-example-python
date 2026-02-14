@@ -398,16 +398,19 @@
     "schemas": {
       "Book": {
         "properties": {
-          "name": {
-            "type": "string",
-            "pattern": "^shelves/[a-zA-Z0-9\\-]+/books/[a-zA-Z0-9\\-]+$",
-            "title": "Name",
-            "description": "The resource name of the book. Format: shelves/{shelf}/books/{book}"
-          },
           "path": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^shelves/[a-zA-Z0-9\\-]+/books/[a-zA-Z0-9\\-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Path",
-            "description": "The resource path."
+            "description": "The resource path.",
+            "readOnly": true
           },
           "title": {
             "type": "string",
@@ -422,8 +425,6 @@
         },
         "type": "object",
         "required": [
-          "name",
-          "path",
           "title",
           "author"
         ],
@@ -494,16 +495,19 @@
       },
       "Shelf": {
         "properties": {
-          "name": {
-            "type": "string",
-            "pattern": "^shelves/[a-zA-Z0-9\\-]+$",
-            "title": "Name",
-            "description": "The resource name of the shelf. Format: shelves/{shelf}"
-          },
           "path": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^shelves/[a-zA-Z0-9\\-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Path",
-            "description": "The resource path."
+            "description": "The resource path.",
+            "readOnly": true
           },
           "theme": {
             "type": "string",
@@ -513,8 +517,6 @@
         },
         "type": "object",
         "required": [
-          "name",
-          "path",
           "theme"
         ],
         "title": "Shelf",
@@ -550,6 +552,13 @@
           "type": {
             "type": "string",
             "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
           }
         },
         "type": "object",
