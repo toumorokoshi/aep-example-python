@@ -23,3 +23,8 @@ aep-server = "aep_example.main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+]

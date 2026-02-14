@@ -3,7 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .db import init_db
 from .api import router
-import uvicorn
+
+from .exceptions import http_exception_handler, validation_exception_handler
+from .models import ProblemDetails
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exceptions import RequestValidationError
+
 
 @asynccontextmanager
 async def setup_db(app: FastAPI):
@@ -24,7 +29,17 @@ app = FastAPI(
     },
     servers=[
         {"url": "http://localhost:8000", "description": "Local server"}
-    ]
+    ],
+    exception_handlers={
+        StarletteHTTPException: http_exception_handler,
+        RequestValidationError: validation_exception_handler,
+    },
+    responses={
+        422: {"model": ProblemDetails, "description": "Validation Error"},
+        400: {"model": ProblemDetails, "description": "Bad Request"},
+        404: {"model": ProblemDetails, "description": "Not Found"},
+        500: {"model": ProblemDetails, "description": "Internal Server Error"},
+    }
 )
 
 app.add_middleware(
