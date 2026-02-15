@@ -57,3 +57,34 @@ class ListShelvesResponse(BaseModel):
 class ListBooksResponse(BaseModel):
     books: List[Book]
     next_page_token: str = ""
+
+class ShelfUpdate(BaseModel):
+    path: Optional[str] = Field(default=None, pattern=SHELF_NAME_PATTERN, description="The resource path.", json_schema_extra={"readOnly": True, "type": "string"})
+    theme: Optional[str] = None
+
+    model_config = {
+        "json_schema_extra": {
+            "x-aep-resource": {
+                "type": "library.example.com/shelf",
+                "singular": "shelf",
+                "plural": "shelves",
+                "patterns": ["shelves/{shelf}"]
+            }
+        }
+    }
+
+class BookUpdate(BaseModel):
+    path: Optional[str] = Field(default=None, pattern=BOOK_NAME_PATTERN, description="The resource path.", json_schema_extra={"readOnly": True, "type": "string"})
+    title: Optional[str] = None
+    author: Optional[str] = None
+
+    model_config = {
+        "json_schema_extra": {
+            "x-aep-resource": {
+                "type": "library.example.com/book",
+                "singular": "book",
+                "plural": "books",
+                "patterns": ["shelves/{shelf}/books/{book}"]
+            }
+        }
+    }

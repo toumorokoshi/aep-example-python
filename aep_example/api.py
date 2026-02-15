@@ -4,7 +4,8 @@ from sqlalchemy.future import select
 from typing import List
 
 from .db import get_db, DBShelf, DBBook
-from .models import Shelf, Book, ListShelvesResponse, ListBooksResponse
+from .db import get_db, DBShelf, DBBook
+from .models import Shelf, Book, ListShelvesResponse, ListBooksResponse, ShelfUpdate, BookUpdate
 import uuid
 
 router = APIRouter()
@@ -17,10 +18,22 @@ async def list_shelves(
     page_token: str = "",
     db: AsyncSession = Depends(get_db)
 ):
-    result = await db.execute(select(DBShelf))
+    query = select(DBShelf).order_by(DBShelf.id)
+    if page_token:
+        query = query.where(DBShelf.id >= page_token)
+
+    result = await db.execute(query.limit(max_page_size + 1))
     shelves = result.scalars().all()
-    # Simple pagination logic omitted for brevity, returning all
-    return ListShelvesResponse(shelves=[Shelf(path=f"shelves/{s.id}", theme=s.theme) for s in shelves])
+
+    next_token = ""
+    if len(shelves) > max_page_size:
+        next_token = shelves[max_page_size].id
+        shelves = shelves[:max_page_size]
+
+    return ListShelvesResponse(
+        shelves=[Shelf(path=f"shelves/{s.id}", theme=s.theme) for s in shelves],
+        next_page_token=next_token
+    )
 
 @router.post("/shelves", response_model=Shelf, status_code=status.HTTP_201_CREATED, operation_id="CreateShelf", description="Create a new shelf.")
 async def create_shelf(
@@ -66,6 +79,25 @@ async def delete_shelf(shelf_id: str, db: AsyncSession = Depends(get_db)):
     await db.commit()
     return None
 
+@router.patch("/shelves/{shelf_id}", response_model=Shelf, operation_id="UpdateShelf", description="Update a shelf.")
+async def update_shelf(
+    shelf_id: str,
+    shelf: ShelfUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(DBShelf).where(DBShelf.id == shelf_id))
+    existing_shelf = result.scalars().first()
+    if not existing_shelf:
+        raise HTTPException(status_code=404, detail="Shelf not found")
+
+    update_data = shelf.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(existing_shelf, key, value)
+
+    await db.commit()
+    await db.refresh(existing_shelf)
+    return Shelf(path=f"shelves/{existing_shelf.id}", theme=existing_shelf.theme)
+
 # --- Books ---
 
 @router.get("/shelves/{shelf_id}/books", response_model=ListBooksResponse, operation_id="ListBooks", description="List books on a shelf.")
@@ -80,9 +112,22 @@ async def list_books(
     if not s_result.scalars().first():
          raise HTTPException(status_code=404, detail="Parent shelf not found")
 
-    result = await db.execute(select(DBBook).where(DBBook.shelf_id == shelf_id))
+    query = select(DBBook).where(DBBook.shelf_id == shelf_id).order_by(DBBook.id)
+    if page_token:
+        query = query.where(DBBook.id >= page_token)
+
+    result = await db.execute(query.limit(max_page_size + 1))
     books = result.scalars().all()
-    return ListBooksResponse(books=[Book(path=f"shelves/{shelf_id}/books/{b.id}", title=b.title, author=b.author) for b in books])
+
+    next_token = ""
+    if len(books) > max_page_size:
+        next_token = books[max_page_size].id
+        books = books[:max_page_size]
+
+    return ListBooksResponse(
+        books=[Book(path=f"shelves/{shelf_id}/books/{b.id}", title=b.title, author=b.author) for b in books],
+        next_page_token=next_token
+    )
 
 @router.post("/shelves/{shelf_id}/books", response_model=Book, status_code=status.HTTP_201_CREATED, operation_id="CreateBook", description="Create a new book on a shelf.")
 async def create_book(
@@ -131,3 +176,31 @@ async def delete_book(shelf_id: str, book_id: str, db: AsyncSession = Depends(ge
     await db.delete(book)
     await db.commit()
     return None
+
+@router.patch("/shelves/{shelf_id}/books/{book_id}", response_model=Book, operation_id="UpdateBook", description="Update a book.")
+async def update_book(
+    shelf_id: str,
+    book_id: str,
+    book: BookUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(DBBook).where(DBBook.id == book_id))
+    existing_book = result.scalars().first()
+    if not existing_book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    # Optionally verify shelf_id matches
+    if existing_book.shelf_id != shelf_id:
+         # Depending on design, return 404 or verify path consistency
+         # Here we assume the path in URL dictates the resource to find?
+         # But the DBBook stores shelf_id.
+         # If existing_book.shelf_id != shelf_id, technically the resource at URL doesn't exist.
+         raise HTTPException(status_code=404, detail="Book not found in this shelf")
+
+    update_data = book.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(existing_book, key, value)
+
+    await db.commit()
+    await db.refresh(existing_book)
+    return Book(path=f"shelves/{shelf_id}/books/{existing_book.id}", title=existing_book.title, author=existing_book.author)

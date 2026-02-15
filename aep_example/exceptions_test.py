@@ -11,7 +11,7 @@ class TestExceptions(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.headers["content-type"], "application/problem+json")
         data = response.json()
-        self.assertEqual(data["type"], "about:blank")
+        self.assertEqual(data["type"], "aep.example.com/http-error")
         self.assertEqual(data["status"], 404)
         # detail might be missing for generic 404
 
@@ -22,7 +22,7 @@ class TestExceptions(unittest.TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.headers["content-type"], "application/problem+json")
         data = response.json()
-        self.assertEqual(data["type"], "about:blank")
+        self.assertEqual(data["type"], "aep.example.com/validation-error")
         self.assertEqual(data["title"], "Validation Error")
         self.assertEqual(data["status"], 422)
         self.assertTrue("detail" in data)

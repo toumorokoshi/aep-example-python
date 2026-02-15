@@ -305,6 +305,84 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update Shelf",
+        "description": "Update a shelf.",
+        "operationId": "UpdateShelf",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shelf"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/shelves/{shelf_id}/books": {
@@ -631,6 +709,93 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update Book",
+        "description": "Update a book.",
+        "operationId": "UpdateBook",
+        "parameters": [
+          {
+            "name": "shelf_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Shelf Id"
+            }
+          },
+          {
+            "name": "book_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Book Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -670,6 +835,57 @@
           "author"
         ],
         "title": "Book",
+        "x-aep-resource": {
+          "patterns": [
+            "shelves/{shelf}/books/{book}"
+          ],
+          "plural": "books",
+          "singular": "book",
+          "type": "library.example.com/book"
+        }
+      },
+      "BookUpdate": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^shelves/[a-zA-Z0-9\\-]+/books/[a-zA-Z0-9\\-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "type": "string",
+            "title": "Path",
+            "description": "The resource path.",
+            "readOnly": true
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "author": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author"
+          }
+        },
+        "type": "object",
+        "title": "BookUpdate",
         "x-aep-resource": {
           "patterns": [
             "shelves/{shelf}/books/{book}"
@@ -803,6 +1019,46 @@
           "theme"
         ],
         "title": "Shelf",
+        "x-aep-resource": {
+          "patterns": [
+            "shelves/{shelf}"
+          ],
+          "plural": "shelves",
+          "singular": "shelf",
+          "type": "library.example.com/shelf"
+        }
+      },
+      "ShelfUpdate": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^shelves/[a-zA-Z0-9\\-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "type": "string",
+            "title": "Path",
+            "description": "The resource path.",
+            "readOnly": true
+          },
+          "theme": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theme"
+          }
+        },
+        "type": "object",
+        "title": "ShelfUpdate",
         "x-aep-resource": {
           "patterns": [
             "shelves/{shelf}"

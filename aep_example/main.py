@@ -67,6 +67,16 @@ def run_server():
 
 def generate_openapi():
     openapi_data = app.openapi()
+
+    # Patch content type for merge-patch+json
+    for path, methods in openapi_data.get("paths", {}).items():
+        if "patch" in methods:
+            op = methods["patch"]
+            if "requestBody" in op and "content" in op["requestBody"]:
+                content = op["requestBody"]["content"]
+                if "application/json" in content:
+                    content["application/merge-patch+json"] = content.pop("application/json")
+
     with open("openapi.json", "w") as f:
         json.dump(openapi_data, f, indent=2)
         f.write("\n")
