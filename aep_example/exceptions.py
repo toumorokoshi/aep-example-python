@@ -6,7 +6,7 @@ from .models import ProblemDetails
 
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     problem = ProblemDetails(
-        type="about:blank",
+        type="aep.example.com/http-error",
         title=exc.detail if isinstance(exc.detail, str) else "HTTP Exception",
         status=exc.status_code,
         detail=str(exc.detail) if not isinstance(exc.detail, str) else None,
@@ -20,7 +20,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     problem = ProblemDetails(
-        type="about:blank",
+        type="aep.example.com/validation-error",
         title="Validation Error",
         status=status.HTTP_422_UNPROCESSABLE_ENTITY,
         detail=str(exc),
